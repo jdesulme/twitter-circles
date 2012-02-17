@@ -1,18 +1,37 @@
-$(document).ready(function(){
-	
+s$(document).ready(function() {
 	var tempSN = "jeffsonstein";
 	
-	getFollowers(tempSN);
+	//getFollowers(tempSN);
+	var canvas = document.getElementById('canvas');
 	
-	/*
-	for (var i=0; i < 100; i++) {
-		var canvas = document.getElementById('canvas');
+	
+	$('#canvas').attr({height: ($(window).height() > 600) ? $(window).height() : '600', width: ($(window).width() > 740) ? $(window).width() : '740'});
+	
+	for (var i = 0; i < 150; i++) {
+		
 		addCircle(i);
 	}
-	*/
-
-}
-
+	
+	
+	
+	$('.circle').bind('click',function(){
+		var id = $(this).attr('id');
+		console.log(id);
+		//getUserById(id);
+	})
+	
+	$('.circle').hover(
+		function() {
+			console.log('going in :-)');
+		},
+		function() {
+			console.log('leaving');
+		}
+		
+	);
+	
+});
+	
 randomColor = function() {
 	//Credit: http://paulirish.com/2009/random-hex-color-code-snippets/
 	return '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -22,10 +41,15 @@ randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
 addCircle = function(id) {
+	var height = ($(window).height() > 600) ? $(window).height() : '600';
+	var width = ($(window).width() > 740) ? $(window).width() : '740';
+	
 	var circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-	circle.setAttribute('cx', randomRange(5,1024));
-	circle.setAttribute('cy', randomRange(5,1024));
+	circle.setAttribute('class', 'circle');
+	circle.setAttribute('cx', randomRange(5,width));
+	circle.setAttribute('cy', randomRange(5,height));
 	circle.setAttribute('r', randomRange(2,100));
 	circle.setAttribute('fill', randomColor());	
 	circle.setAttribute('opacity', 0.4);
@@ -57,14 +81,19 @@ getFollowers = function(sn) {
 		},
 		timeout: 15000,
 		success: function( data ) {
-			console.log(data);
+			console.log(data.ids);
 			//populate the bubbles and create the circles
+			var len = data.ids.length;
+			for (var i = 0; i < len; i++) {
+				console.log(data.ids[i]);
+				var canvas = document.getElementById('canvas');
+				addCircle(data.ids[i]);
+			}
+	
 		}
 	});		
 
 }
-
-
 
 getUserById = function(id) {
 	$.ajax({
@@ -76,6 +105,7 @@ getUserById = function(id) {
 		timeout: 15000,
 		success: function(data) {
 			console.log(data);
+			
 			//load a modal window displaying the information
 		}
 	});			
@@ -87,3 +117,4 @@ clearAll = function(location) {
 		node.removeChild(node.lastChild);
 	}
 }
+
