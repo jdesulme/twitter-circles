@@ -1,13 +1,25 @@
-<html>
-<!-- http://ie.microsoft.com/testdrive/Performance/PulsatingBubbles/Default.xhtml -->
-<!-- http://www.smashingmagazine.com/2008/10/16/swirls-flowers-circles-a-free-vector-graphics-set/ -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="script.js"> </script>
-
+<!doctype html>
+<head>
+	<!-- http://www.queness.com/post/77/simple-jquery-modal-window-tutorial -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="script.js"> </script>
+</head>
 
 <body>
-	
+	<div id="options">
+		<p>Options</p>
+
+		<div id="options-screen">
+			<label for="sn">Enter a Screen Name</label>
+			<input id="sn" type="text" />
+		</div>
+	</div>
+
 	<svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg> 
 
+	<div id="boxes">
+	 	<div id="twitter-info" class="window"></div> 
+		<div id="mask"></div>
+	</div>
 </body>
 </html>

@@ -1,35 +1,54 @@
-s$(document).ready(function() {
-	var tempSN = "jeffsonstein";
-	
-	//getFollowers(tempSN);
-	var canvas = document.getElementById('canvas');
-	
+$(document).ready(function() {
+	getFollowers("jeffsonstein");
 	
 	$('#canvas').attr({height: ($(window).height() > 600) ? $(window).height() : '600', width: ($(window).width() > 740) ? $(window).width() : '740'});
 	
-	for (var i = 0; i < 150; i++) {
-		
-		addCircle(i);
-	}
-	
-	
-	
-	$('.circle').bind('click',function(){
+	$('.circle').live('click',function(){
 		var id = $(this).attr('id');
 		console.log(id);
-		//getUserById(id);
-	})
-	
-	$('.circle').hover(
-		function() {
-			console.log('going in :-)');
-		},
-		function() {
-			console.log('leaving');
-		}
 		
-	);
+		var maskHeight = $(document).height();
+		var maskWidth = $(window).width();
+		
+		  //Set height and width to mask to fill up the whole screen
+		$('#mask').css({'width':maskWidth,'height':maskHeight});
+		 
+		//transition effect     
+		$('#mask').fadeIn(1000);    
+		$('#mask').fadeTo("slow",0.8);  
+	 
+		//Get the window height and width
+		var winH = $(window).height();
+		var winW = $(window).width();
+		
+		//gets and sets the information
+		getUserById(id);
+		
+		 //Set the popup window to center
+		$('#twitter-info').css('top',  winH/2-$('#twitter-info').height()/2);
+		$('#twitter-info').css('left', winW/2-$('#twitter-info').width()/2);
 	
+		//transition effect
+		$('#twitter-info').fadeIn(2000); 
+		
+	})
+
+	//if mask is clicked clear out the screen
+	$('#mask').click(function () {
+		$(this).hide();
+		$('.window').hide();
+	});     
+	
+	
+
+	$('#options').click(function() {
+		$('#options-screen').slideToggle('slow', function(){
+			console.log('yep');
+		
+		});
+	});
+	
+
 });
 	
 randomColor = function() {
@@ -42,57 +61,21 @@ randomRange = function(min, max) {
 }
 
 
-addCircle = function(id) {
-	var height = ($(window).height() > 600) ? $(window).height() : '600';
-	var width = ($(window).width() > 740) ? $(window).width() : '740';
-	
-	var circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-	circle.setAttribute('class', 'circle');
-	circle.setAttribute('cx', randomRange(5,width));
-	circle.setAttribute('cy', randomRange(5,height));
-	circle.setAttribute('r', randomRange(2,100));
-	circle.setAttribute('fill', randomColor());	
-	circle.setAttribute('opacity', 0.4);
-	circle.setAttribute('id', id);
-	circle.style.cursor = 'pointer';
-	
-	var animate = document.createElementNS("http://www.w3.org/2000/svg","animateTransform");
-	animate.setAttribute('attributeName', 'transform');
-	animate.setAttribute('type', 'rotate');
-	animate.setAttribute('from', randomRange(2,100));
-	animate.setAttribute('to', randomRange(2,100));
-	animate.setAttribute('dur', '30s');
-	animate.setAttribute('repeatCount', 'indefinite');
-	
-	//add an event listener so once they click on a bubble it loads there info
-	//do a hover event where it loads a single person
-	
-	circle.appendChild(animate);
-	canvas.appendChild(circle);
-	
-}
-
 getFollowers = function(sn) {
 	$.ajax({
-		url: "http://api.twitter.com/1/friends/ids.json",
+		//url: "http://api.twitter.com/1/friends/ids.json",
+		url: "http://people.rit.edu/sxm5154/twitter/?cursor=",
 		dataType: "jsonp",
-		data: {
-			screen_name: sn
-		},
+		data: { screen_name: sn },
 		timeout: 15000,
-		success: function( data ) {
-			console.log(data.ids);
+		success: function(data) {
 			//populate the bubbles and create the circles
-			var len = data.ids.length;
-			for (var i = 0; i < len; i++) {
-				console.log(data.ids[i]);
-				var canvas = document.getElementById('canvas');
+			//loads only 150 random ids instead of all of them
+			for (var i = 0; i < 150; i++) {
 				addCircle(data.ids[i]);
 			}
-	
 		}
 	});		
-
 }
 
 getUserById = function(id) {
@@ -104,17 +87,81 @@ getUserById = function(id) {
 		},
 		timeout: 15000,
 		success: function(data) {
-			console.log(data);
-			
-			//load a modal window displaying the information
+			//load the information into the dom ready to be displayed
+			displayUserInfo(data);
 		}
 	});			
 }			
 
-clearAll = function(location) {
+displayUserInfo = function(obj) {	
+	clear('twitter-info'); //clear previous elements
+	var display = document.getElementById('twitter-info'); 
+	
+	//create and append the figure element
+	var figure = document.createElement('figure');
+	var image = document.createElement('img');
+	image.setAttribute('src', obj.profile_image_url);
+	image.setAttribute('alt', obj.name);
+	figure.appendChild(image);
+	display.appendChild(figure);
+	
+	//add the screen name and attach an a tag
+	var snNode = document.createElement('p');
+	
+	var linkNode = document.createElement('a');
+	linkNode.setAttribute('href','http://www.twitter.com/' + obj.screen_name);
+	
+	var snTxt = document.createTextNode(obj.name + '(' + obj.screen_name + ')' );
+	snNode.setAttribute('class', 'name');
+	
+	linkNode.appendChild(snTxt);
+	snNode.appendChild(linkNode);
+	display.appendChild(snNode);
+	
+	//adds the users count info for tweets, friends, and followers
+	var infoNode = document.createElement('p');
+	var infoTxt = document.createTextNode('Tweets: '+ obj.statuses_count + ' | Friends: ' + obj.friends_count + ' | Followers: ' + obj.followers_count );
+	infoNode.setAttribute('class', 'info');
+	infoNode.appendChild(infoTxt);
+	display.appendChild(infoNode);
+	
+	//adds the users current status information
+	var statNode = document.createElement('p');
+	var statTxt =  document.createTextNode(obj.status.text);
+	statNode.setAttribute('class', 'stats');
+	statNode.appendChild(statTxt);
+	display.appendChild(statNode);
+}
+
+addCircle = function(id) {
+	var height = ($(window).height() > 600) ? $(window).height() : '600';
+	var width = ($(window).width() > 740) ? $(window).width() : '740';
+	var canvas = document.getElementById('canvas');
+	var circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+	var motion = document.createElementNS("http://www.w3.org/2000/svg","animateMotion");
+
+	//sets the attributes for the circle
+	circle.setAttribute('class', 'circle');
+	circle.setAttribute('cx', randomRange(0,width));
+	circle.setAttribute('cy', randomRange(0,height));
+	circle.setAttribute('r', randomRange(2,50));
+	circle.setAttribute('fill', randomColor());	
+	circle.setAttribute('opacity', 0.4);
+	circle.setAttribute('id', id);
+	circle.style.cursor = 'pointer';
+	
+	//sets the attributes for animateMotion
+	motion.setAttribute('dur', '1s');
+	motion.setAttribute('repeatCount', 'indefinite');
+	
+	//attaches everything together
+	circle.appendChild(motion);
+	canvas.appendChild(circle);
+}
+
+clear = function(location) {
 	node = document.getElementById( location );
 	while (node.hasChildNodes()) {
 		node.removeChild(node.lastChild);
 	}
 }
-
