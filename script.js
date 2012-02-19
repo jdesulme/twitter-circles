@@ -1,7 +1,20 @@
 $(document).ready(function() {
-	getFollowers("jeffsonstein");
+	getFollowers("jeffsonstein"); //sets the default account to be loaded
 	
 	$('#canvas').attr({height: ($(window).height() > 600) ? $(window).height() : '600', width: ($(window).width() > 740) ? $(window).width() : '740'});
+
+	//if mask is clicked clear out the screen
+	$('#mask').click(function() {
+		$(this).hide();
+		$('.window').hide();
+	});     
+	
+	$('#load').submit(function(){
+		clear('canvas');
+		var username = $('#sn').val();
+		getFollowers(username);
+		return false;
+	});
 	
 	$('.circle').live('click',function(){
 		var id = $(this).attr('id');
@@ -10,7 +23,7 @@ $(document).ready(function() {
 		var maskHeight = $(document).height();
 		var maskWidth = $(window).width();
 		
-		  //Set height and width to mask to fill up the whole screen
+		//Set height and width to mask to fill up the whole screen
 		$('#mask').css({'width':maskWidth,'height':maskHeight});
 		 
 		//transition effect     
@@ -31,23 +44,7 @@ $(document).ready(function() {
 		//transition effect
 		$('#twitter-info').fadeIn(2000); 
 		
-	})
-
-	//if mask is clicked clear out the screen
-	$('#mask').click(function () {
-		$(this).hide();
-		$('.window').hide();
-	});     
-	
-	
-
-	$('#options').click(function() {
-		$('#options-screen').slideToggle('slow', function(){
-			console.log('yep');
-		
-		});
 	});
-	
 
 });
 	
@@ -62,16 +59,18 @@ randomRange = function(min, max) {
 
 
 getFollowers = function(sn) {
+	console.log(sn);
 	$.ajax({
-		//url: "http://api.twitter.com/1/friends/ids.json",
-		url: "http://people.rit.edu/sxm5154/twitter/?cursor=",
+		url: "http://api.twitter.com/1/friends/ids.json",
 		dataType: "jsonp",
 		data: { screen_name: sn },
 		timeout: 15000,
 		success: function(data) {
+			console.log(data);
 			//populate the bubbles and create the circles
 			//loads only 150 random ids instead of all of them
-			for (var i = 0; i < 150; i++) {
+			var len = data.ids.length;
+			for (var i = 0; i < len; i++) {
 				addCircle(data.ids[i]);
 			}
 		}

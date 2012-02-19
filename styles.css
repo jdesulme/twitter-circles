@@ -1,12 +1,8 @@
-body {
+html, body, div, body {
 	margin: 0;
 	padding: 0;
-	font: normal 1em Lucida Sans Unicode,Lucida Grande,Verdana,Tahoma,Arial,Sans-serif;
-}
-
-button {
-	position: absolute;
-	right: 40px; 
+	vertical-align: baseline;
+	font: normal 1em Lucida Sans Unicode,Lucida Grande,Verdana,Tahoma,Arial,Sans-serif; 
 }
 
 a {
@@ -41,37 +37,44 @@ a:visited {
 	display:none;
 }
 
-#options {
-	background-color: #81AFFB;
-	border-radius: 0 0 20px 20px;
-	-moz-border-radius: 0 0 20px 20px;
-	-webkit-border-radius: 0 0 20px 20px;
-	position: absolute;
-	right: 40px;
-	height: 30px;
-	width: 200px;		
-}
 
-#options p {
-	text-align: center;
-	font-size: 18px;
-	color: white;
-	position: absolute;
-	top: -20px;
-	right: 65px;
+
+#top-header {
+	width: 100%;
+	float: left;
+	background-color: #81AFFB;
 }
 
 #options-screen {
-	width: 250px;
-	display: none;
-	background-color: #81AFFB;
-	border-radius: 20px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	position: relative;
-	right: 40px;
-	top: 40px;
+	position:relative;
+	margin:0 auto;
+	padding: 0 10px;
 }
+
+#left {
+	float: left;
+	width: 350px;
+}
+
+#left p {
+	font-size: 1.5em;
+	margin: .2em;
+	color: white;
+	font-weight: bold;
+}
+
+#left small {
+	color: white;
+	
+}
+
+#right {
+	float: right;
+	margin: 15px 15px 0;
+	color: white;
+}
+
+
 
 #twitter-info figure { 
 	float: left;
