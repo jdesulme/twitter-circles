@@ -16,9 +16,8 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	$('.circle').live('click',function(){
+	$("#canvas").on("click",".circle", function() {
 		var id = $(this).attr('id');
-		console.log(id);
 		
 		var maskHeight = $(document).height();
 		var maskWidth = $(window).width();
