@@ -1,7 +1,10 @@
 $(document).ready(function() {
 	getFollowers("jeffsonstein"); //sets the default account to be loaded
-	
-	$('#canvas').attr({height: ($(window).height() > 600) ? $(window).height() : '600', width: ($(window).width() > 740) ? $(window).width() : '740'});
+	resizeWindow();
+
+	$(window).bind("resize", function(){
+		resizeWindow();
+	});
 
 	//if mask is clicked clear out the screen
 	$('#mask').click(function() {
@@ -15,6 +18,15 @@ $(document).ready(function() {
 		getFollowers(username);
 		return false;
 	});
+	
+	$('#load').keydown(function (e){
+		if(e.keyCode == 13){
+			clear('canvas');
+			var username = $('#sn').val();
+			getFollowers(username);
+		}
+	});					
+	
 	
 	$("#canvas").on("click",".circle", function() {
 		var id = $(this).attr('id');
@@ -43,10 +55,15 @@ $(document).ready(function() {
 		//transition effect
 		$('#twitter-info').fadeIn(2000); 
 		
+		$(this).attr('opacity', 1);
 	});
 
 });
-	
+
+resizeWindow = function() {
+	$('#canvas').attr({height: ($(window).height() > 600) ? $(window).height() : '600', width: ($(window).width() > 740) ? $(window).width() : '740'});
+}
+
 randomColor = function() {
 	//Credit: http://paulirish.com/2009/random-hex-color-code-snippets/
 	return '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -58,20 +75,22 @@ randomRange = function(min, max) {
 
 
 getFollowers = function(sn) {
-	console.log(sn);
+	$('#currentSn').empty();
 	$.ajax({
 		url: "http://api.twitter.com/1/friends/ids.json",
 		dataType: "jsonp",
 		data: { screen_name: sn },
 		timeout: 15000,
 		success: function(data) {
-			console.log(data);
 			//populate the bubbles and create the circles
 			//loads only 150 random ids instead of all of them
 			var len = data.ids.length;
 			for (var i = 0; i < len; i++) {
 				addCircle(data.ids[i]);
+
+				if (i==500) {break;};
 			}
+			$('#currentSn').html('@' + sn);
 		}
 	});		
 }
@@ -149,7 +168,7 @@ addCircle = function(id) {
 	circle.style.cursor = 'pointer';
 	
 	//sets the attributes for animateMotion
-	motion.setAttribute('dur', '1s');
+	motion.setAttribute('dur', '120s');
 	motion.setAttribute('repeatCount', 'indefinite');
 	
 	//attaches everything together

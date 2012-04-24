@@ -1,6 +1,8 @@
 <!doctype html>
 <head>
-	<!-- http://www.queness.com/post/77/simple-jquery-modal-window-tutorial -->
+	<meta charset="utf-8" />
+	<title>Twitter Circles</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script src="script.js"> </script>
 </head>
@@ -14,10 +16,11 @@
 			</div>
 			<div id="right">
 				<form id="load">
-					<label for="sn">Enter a Screen Name</label>
+					<label for="sn">Enter a Screen Name: </label>
 					<input id="sn" name="sn" type="text" />
 					<button>Go</button>
 				</form>
+				<small id="currentSn"></small>
 			</div>
 		</div>	
 	</div>
@@ -25,8 +28,8 @@
 	<svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg> 
 
 	<div id="boxes">
-	 	<div id="twitter-info" class="window"></div> 
-		<div id="mask"></div>
+	 	<div id="twitter-info" class="window"> </div> 
+		<div id="mask"> </div>
 	</div>
 </body>
 </html>
